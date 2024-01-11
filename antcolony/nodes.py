@@ -5,7 +5,7 @@ from .node import Node
 
 class Nodes:
     def __init__(self, filename):
-        self.graph = self._load_graph(filename)
+        self._graph = self._load_graph(filename)
 
     def _load_graph(self, filename):
         graph = nx.Graph()
@@ -42,5 +42,15 @@ class Nodes:
                         graph.add_edge(node_id, adjacent_node_id, distance=graph.nodes[node_id]['data'].distance(graph.nodes[adjacent_node_id]['data']))
         return graph
 
+    def __getitem__(self, keys):
+        try:
+            if isinstance(keys, str):
+                return self._graph.nodes[keys]['data']
+            elif isinstance(keys, tuple):
+                return self._graph.get_edge_data(*keys)
+            return None
+        except KeyError:
+            return None
+
     def __str__(self):
-        return str(self.graph.nodes)
+        return str(self._graph.nodes)
