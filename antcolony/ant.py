@@ -13,6 +13,16 @@ class Ant:
         self.path_length = 0
         self.visited_nodes = set(source)
 
+    def move(self):
+        next_node = self._choose_node()
+        if not next_node:
+            return
+
+        self.path.append(next_node)
+        self.visited_nodes.remove(next_node)
+        self.path_length += self.nodes[self.current_node, next_node]
+        self.current_node = next_node
+
     def _choose_node(self):
         unvisited_neighbours = self._get_unvisited_neighbours()
         if len(unvisited_neighbours) == 0:
