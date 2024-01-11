@@ -49,11 +49,13 @@ class Nodes:
         except KeyError:
             return None
 
-    def update_pheromones(self, node1, node2, pheromones):
+    def add_pheromones(self, node1, node2, pheromones):
         edge = self[node1, node2]
-        current_pheromones = edge['pheromones']
-        new_pheromones = (1 - self._evaporation_rate)*current_pheromones + pheromones
-        edge['pheromones'] = new_pheromones
+        edge['pheromones'] += pheromones
+
+    def evaporate(self,rho):
+        for edge in self._graph.edges:
+            edge['pheromones']*=1-rho
 
     def __getitem__(self, keys):
         try:
