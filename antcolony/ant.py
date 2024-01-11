@@ -12,16 +12,22 @@ class Ant:
 
         self.path = [source]
         self.path_length = 0
-        self.visited_nodes = set(source)
+        # self.visited_nodes = set(source)
+        self.visited_nodes = [source]
         self.reached_destination = False
+        self.end = False
 
     def move(self):
         next_node = self._choose_node()
         if not next_node or self.reached_destination:
+            self.end = True
             return False
 
+        if len(next_node) == 1:
+            print("aa'")
+
         self.path.append(next_node)
-        self.visited_nodes.add(next_node)
+        self.visited_nodes.append(next_node)
         self.path_length += self.nodes[self.current_node, next_node]['distance']
         self.current_node = next_node
 
