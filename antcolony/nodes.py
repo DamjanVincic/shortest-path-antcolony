@@ -50,8 +50,7 @@ class Nodes:
             return None
 
     def add_pheromones(self, node1, node2, pheromones):
-        edge = self[node1, node2]
-        edge['pheromones'] += pheromones
+        self[node1, node2]['pheromones'] += pheromones
 
     def evaporate(self,rho):
         for edge in self._graph.edges:

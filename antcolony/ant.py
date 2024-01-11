@@ -3,13 +3,13 @@ import utils
 
 
 class Ant:
-    def __init__(self, nodes, source, destination, alpha, beta, evaporation_rate):
+    def __init__(self, nodes, source, destination, alpha, beta, pheromone_amount):
         self.nodes = nodes
         self.current_node = source
         self.destination = destination
         self.alpha = alpha
         self.beta = beta
-        self.evaporation_rate = evaporation_rate
+        self.pheromone_amount = pheromone_amount
 
         self.path = [source]
         self.path_length = 0
@@ -49,4 +49,4 @@ class Ant:
 
     def add_pheromones(self):
         for i in range(len(self.path) - 1, 0, -1):
-            self.nodes.update_pheromones(self, self.path[i], self.path[i-1], 1/self.path_length)
+            self.nodes.add_pheromones(self, self.path[i], self.path[i-1], self.pheromone_amount/self.path_length)
