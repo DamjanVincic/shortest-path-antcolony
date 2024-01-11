@@ -1,4 +1,5 @@
 import networkx as nx
+import re
 from .node import Node
 
 
@@ -8,23 +9,25 @@ class Nodes:
 
     def _load_graph(self, filename):
         graph = nx.Graph()
-        nodes = {}
+        pattern = re.compile(r'(\d+)\((\d.+),(\d.+)\)(?::(.+))?')
         with open(filename, 'r') as f:
-            lines = f.readlines()
-            for line in lines:
-                node_id = line.split('(')[0]
-                coordinates = line.split('(')[1].split(')')[0].split(',')
-                nodes[node_id] = {'x': float(coordinates[0]), 'y': float(coordinates[1])}
-                graph.add_node(node_id, data=Node(float(coordinates[0]), float(coordinates[1])))
+            for line in f.readlines():
+                match = pattern.match(line)
+                node_id = match.group(1)
+                if not graph.has_node(node_id):
+                    graph.add_node(node_id, data=Node(float(match.group(2)), float(match.group(3))))
+                elif not graph.nodes[node_id].get('data', None):
+                    graph.nodes[node_id]['data'] = Node(float(match.group(2)), float(match.group(3)))
 
-        for line in lines:
-            node_id = line.split('(')[0]
-            if len(line.split(':')) < 2:
-                continue
-            incident_nodes = line.split(':')[1].split(",")
-            for incident_node in incident_nodes:
-                incident_node = incident_node.strip()
-                graph.add_edge(node_id, incident_node, distance=graph.nodes[node_id]['data'].distance(graph.nodes[incident_node]['data']))
+                adjacent_nodes = match.group(4)
+                if not adjacent_nodes:
+                    continue
+
+                for adjacent_node_id in adjacent_nodes.split(','):
+                    if not graph.has_node(adjacent_node_id):
+                        graph.add_node(adjacent_node_id)
+                    if not graph.has_edge(node_id, adjacent_node_id) and graph.nodes[adjacent_node_id].get('data', None):
+                        graph.add_edge(node_id, adjacent_node_id, distance=graph.nodes[node_id]['data'].distance(graph.nodes[adjacent_node_id]['data']))
         return graph
 
     def __str__(self):
