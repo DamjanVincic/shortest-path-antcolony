@@ -1,5 +1,5 @@
 from .nodes import Nodes
-import utils
+import antcolony.utils as utils
 
 
 class Ant:
@@ -22,7 +22,7 @@ class Ant:
 
         self.path.append(next_node)
         self.visited_nodes.add(next_node)
-        self.path_length += self.nodes[self.current_node, next_node]
+        self.path_length += self.nodes[self.current_node, next_node]['distance']
         self.current_node = next_node
 
         if self.current_node == self.destination:
@@ -36,8 +36,10 @@ class Ant:
             return None
 
         edge_coefficients = {}
-        for neighbour in unvisited_neighbours[0]:
+        for neighbour in unvisited_neighbours:
             edge = self.nodes[self.current_node, neighbour]
+            if edge['distance'] == 0: # Some nodes have the same coordinates
+                continue
             edge_coefficients[neighbour] = utils.edge_coefficient(edge['pheromones'], edge['distance'], self.alpha, self.beta)
 
         next_node = utils.roulette_selection(edge_coefficients)
@@ -48,4 +50,4 @@ class Ant:
 
     def add_pheromones(self, shortest_path_length):
         for i in range(len(self.path) - 1, 0, -1):
-            self.nodes.add_pheromones(self, self.path[i], self.path[i-1], shortest_path_length/self.path_length)
+            self.nodes.add_pheromones(self.path[i], self.path[i-1], shortest_path_length/self.path_length)

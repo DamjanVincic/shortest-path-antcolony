@@ -4,9 +4,8 @@ from .node import Node
 
 
 class Nodes:
-    def __init__(self, filename, evaporation_rate):
+    def __init__(self, filename):
         self._graph = self._load_graph(filename)
-        self._evaporation_rate = evaporation_rate
 
     def _load_graph(self, filename):
         graph = nx.Graph()
@@ -54,7 +53,7 @@ class Nodes:
 
     def evaporate(self,rho):
         for edge in self._graph.edges:
-            edge['pheromones']*=1-rho
+            self._graph.edges[edge]['pheromones']*=1-rho
 
     def __getitem__(self, keys):
         try:
