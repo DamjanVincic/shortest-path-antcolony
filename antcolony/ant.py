@@ -3,13 +3,12 @@ import utils
 
 
 class Ant:
-    def __init__(self, nodes, source, destination, alpha, beta, pheromone_amount):
+    def __init__(self, nodes, source, destination, alpha, beta):
         self.nodes = nodes
         self.current_node = source
         self.destination = destination
         self.alpha = alpha
         self.beta = beta
-        self.pheromone_amount = pheromone_amount
 
         self.path = [source]
         self.path_length = 0
@@ -47,6 +46,6 @@ class Ant:
     def _get_unvisited_neighbours(self):
         return [node for node in self.nodes.get_neighbours(self.current_node) if node not in self.visited_nodes]
 
-    def add_pheromones(self):
+    def add_pheromones(self, shortest_path_length):
         for i in range(len(self.path) - 1, 0, -1):
-            self.nodes.add_pheromones(self, self.path[i], self.path[i-1], self.pheromone_amount/self.path_length)
+            self.nodes.add_pheromones(self, self.path[i], self.path[i-1], shortest_path_length/self.path_length)
