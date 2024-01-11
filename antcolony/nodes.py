@@ -1,13 +1,10 @@
 import networkx as nx
-import math
+from .node import Node
 
 
 class Nodes:
     def __init__(self, filename):
         self.graph = self._load_graph(filename)
-
-    def distance(self, x1, y1, x2, y2):
-        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     def _load_graph(self, filename):
         graph = nx.Graph()
@@ -18,7 +15,7 @@ class Nodes:
                 node_id = line.split('(')[0]
                 coordinates = line.split('(')[1].split(')')[0].split(',')
                 nodes[node_id] = {'x': float(coordinates[0]), 'y': float(coordinates[1])}
-                graph.add_node(node_id)
+                graph.add_node(node_id, data=Node(float(coordinates[0]), float(coordinates[1])))
 
         for line in lines:
             node_id = line.split('(')[0]
@@ -27,9 +24,7 @@ class Nodes:
             incident_nodes = line.split(':')[1].split(",")
             for incident_node in incident_nodes:
                 incident_node = incident_node.strip()
-                graph.add_edge(node_id, incident_node,
-                               weight=self.distance(nodes[node_id]['x'], nodes[node_id]['y'], nodes[incident_node]['x'],
-                                                    nodes[incident_node]['y']))
+                graph.add_edge(node_id, incident_node, distance=graph.nodes[node_id]['data'].distance(graph.nodes[incident_node]['data']))
         return graph
 
     def __str__(self):
