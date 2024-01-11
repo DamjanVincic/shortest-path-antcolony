@@ -1,13 +1,14 @@
 from ant import Ant
 
 class AntColonyOptimization:
-    def __init__(self,nodes,m,alpha,beta,rho,itetations) -> None:
+    def __init__(self,nodes,m,alpha,beta,rho,itetations, epsilon) -> None:
         self.nodes=nodes
         self.m=m
         self.alpha=alpha
         self.beta=beta
         self.rho=rho
         self.iterations=itetations
+        self.epsilon=epsilon
     """
         m - number of ants
         alpha - influence of pheromones on choice next node
@@ -26,18 +27,25 @@ class AntColonyOptimization:
                     ants.remove(ant)
                     if ant.reached_destination:
                         arrived_ants.append(ant)
-        self.leave_pheromones(arrived_ants)
         self.nodes.evaporate()
+        self.leave_pheromones(arrived_ants)
+
+        best_ant = min(ants, key=lambda x: x.path_length)
+        return best_ant.path_length, best_ant.path
 
     def leave_pheromones(self,ants):
         shortest_path_length=min(ant.path_length for ant in ants)
         for ant in ants():
             ant.add_pheromones(shortest_path_length)
-            
 
     def find_shortest_path(self,source,destination):
+        previous_optimum = None
         for i in self.iterations:
-            self.send_ants(source,destination)
+            current_optimum = self.send_ants(source,destination)
+            if current_optimum[0] < previous_optimum[0]:
+                previous_optimum = current_optimum
+            if previous_optimum and abs(previous_optimum[0] - current_optimum[0]) < self.epsilon:
+                break
 
-
+        return previous_optimum
     
