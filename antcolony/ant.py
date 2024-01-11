@@ -3,25 +3,33 @@ import utils
 
 
 class Ant:
-    def __init__(self, nodes, source, destination, alpha, beta):
+    def __init__(self, nodes, source, destination, alpha, beta, evaporation_rate):
         self.nodes = nodes
         self.current_node = source
         self.destination = destination
         self.alpha = alpha
         self.beta = beta
+        self.evaporation_rate = evaporation_rate
+
         self.path = [source]
         self.path_length = 0
         self.visited_nodes = set(source)
+        self.reached_destination = False
 
     def move(self):
         next_node = self._choose_node()
-        if not next_node:
-            return
+        if not next_node or self.reached_destination:
+            return False
 
         self.path.append(next_node)
-        self.visited_nodes.remove(next_node)
+        self.visited_nodes.add(next_node)
         self.path_length += self.nodes[self.current_node, next_node]
         self.current_node = next_node
+
+        if self.current_node == self.destination:
+            self.reached_destination = True
+
+        return True
 
     def _choose_node(self):
         unvisited_neighbours = self._get_unvisited_neighbours()
@@ -39,3 +47,6 @@ class Ant:
     def _get_unvisited_neighbours(self):
         return [node for node in self.nodes.get_neighbours(self.current_node) if node not in self.visited_nodes]
 
+    def add_pheromones(self):
+        for i in range(len(self.path) - 1, 0, -1):
+            self.nodes.update_pheromones(self, self.path[i], self.path[i-1], 1/self.path_length)

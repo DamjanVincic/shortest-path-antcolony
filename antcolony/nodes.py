@@ -4,8 +4,9 @@ from .node import Node
 
 
 class Nodes:
-    def __init__(self, filename):
+    def __init__(self, filename, evaporation_rate):
         self._graph = self._load_graph(filename)
+        self._evaporation_rate = evaporation_rate
 
     def _load_graph(self, filename):
         graph = nx.Graph()
@@ -47,6 +48,12 @@ class Nodes:
             return self._graph.neighbors(node_id)
         except KeyError:
             return None
+
+    def update_pheromones(self, node1, node2, pheromones):
+        edge = self[node1, node2]
+        current_pheromones = edge['pheromones']
+        new_pheromones = (1 - self._evaporation_rate)*current_pheromones + pheromones
+        edge['pheromones'] = new_pheromones
 
     def __getitem__(self, keys):
         try:
