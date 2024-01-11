@@ -39,8 +39,14 @@ class Nodes:
 
                     # If there isn't an edge between the node and the neighbour, and the neighbour has coordinates
                     if not graph.has_edge(node_id, adjacent_node_id) and graph.nodes[adjacent_node_id].get('data', None):
-                        graph.add_edge(node_id, adjacent_node_id, distance=graph.nodes[node_id]['data'].distance(graph.nodes[adjacent_node_id]['data']))
+                        graph.add_edge(node_id, adjacent_node_id, distance=graph.nodes[node_id]['data'].distance(graph.nodes[adjacent_node_id]['data']), pheromones=1.0)
         return graph
+
+    def get_neighbours(self, node_id):
+        try:
+            return self._graph.neighbors(node_id)
+        except KeyError:
+            return None
 
     def __getitem__(self, keys):
         try:
