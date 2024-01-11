@@ -31,7 +31,7 @@ class AntColonyOptimization:
         self.nodes.evaporate(self.rho)
         self.leave_pheromones(arrived_ants)
 
-        best_ant = min(ants, key=lambda x: x.path_length) if ants else None
+        best_ant = min(arrived_ants, key=lambda x: x.path_length) if ants else None
         if best_ant:
             return best_ant.path_length, best_ant.path
         return None
