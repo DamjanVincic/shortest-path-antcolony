@@ -1,4 +1,3 @@
-from .nodes import Nodes
 import antcolony.utils as utils
 
 
@@ -12,7 +11,6 @@ class Ant:
 
         self.path = [source]
         self.path_length = 0
-        # self.visited_nodes = set(source)
         self.visited_nodes = [source]
         self.reached_destination = False
         self.end = False
@@ -22,9 +20,6 @@ class Ant:
         if not next_node or self.reached_destination:
             self.end = True
             return False
-
-        if len(next_node) == 1:
-            print("aa'")
 
         self.path.append(next_node)
         self.visited_nodes.append(next_node)
@@ -44,7 +39,7 @@ class Ant:
         edge_coefficients = {}
         for neighbour in unvisited_neighbours:
             edge = self.nodes[self.current_node, neighbour]
-            if edge['distance'] == 0: # Some nodes have the same coordinates
+            if edge['distance'] == 0:  # Some nodes have the same coordinates
                 continue
             edge_coefficients[neighbour] = utils.edge_coefficient(edge['pheromones'], edge['distance'], self.alpha, self.beta)
 

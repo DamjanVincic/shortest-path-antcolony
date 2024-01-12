@@ -51,9 +51,9 @@ class Nodes:
     def add_pheromones(self, node1, node2, pheromones):
         self[node1, node2]['pheromones'] += pheromones
 
-    def evaporate(self,rho):
+    def evaporate(self, rho):
         for edge in self._graph.edges:
-            self._graph.edges[edge]['pheromones']*=1-rho
+            self._graph.edges[edge]['pheromones'] *= 1-rho
 
     def __getitem__(self, keys):
         try:
