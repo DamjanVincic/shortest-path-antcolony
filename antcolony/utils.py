@@ -1,12 +1,13 @@
 import math
 import random
+from typing import Dict
 
 
-def edge_coefficient(pheromones, distance, alpha, beta):
+def edge_coefficient(pheromones: float, distance: float, alpha: float, beta: float) -> float:
     return math.pow(pheromones, alpha)*math.pow(1/distance, beta)
 
 
-def roulette_selection(coefficients):
+def roulette_selection(coefficients: Dict[str, float]) -> str:
     total_coefficients = sum(coefficients[k] for k in coefficients)
     relative_coefficients = {}
 

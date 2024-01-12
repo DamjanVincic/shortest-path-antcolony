@@ -4,10 +4,10 @@ from .node import Node
 
 
 class Nodes:
-    def __init__(self, filename, starting_pheromones):
+    def __init__(self, filename: str, starting_pheromones: float):
         self._graph = self._load_graph(filename, starting_pheromones)
 
-    def _load_graph(self, filename, starting_pheromones):
+    def _load_graph(self, filename: str, starting_pheromones: float) -> nx.Graph:
         graph = nx.Graph()
 
         r"""
@@ -43,16 +43,16 @@ class Nodes:
 
         return graph
 
-    def get_neighbours(self, node_id):
+    def get_neighbours(self, node_id: str):
         try:
             return self._graph.neighbors(node_id)
         except KeyError:
             return None
 
-    def add_pheromones(self, node1, node2, pheromones):
+    def add_pheromones(self, node1: str, node2: str, pheromones: float):
         self[node1, node2]['pheromones'] += pheromones
 
-    def evaporate(self, rho):
+    def evaporate(self, rho: float):
         # Evaporate the percentage of pheromones, percentage is represented with rho
         for edge in self._graph.edges:
             self._graph.edges[edge]['pheromones'] *= 1-rho
