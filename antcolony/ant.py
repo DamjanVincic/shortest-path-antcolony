@@ -4,12 +4,13 @@ from .nodes import Nodes
 
 
 class Ant:
-    def __init__(self, nodes: Nodes, source: str, destination: str, alpha: float, beta: float):
+    def __init__(self, nodes: Nodes, source: str, destination: str, alpha: float, beta: float, q: float):
         self.nodes = nodes  # Node representation
         self.current_node = source  # The current node that the ant is on
         self.destination = destination  # The node that the ant wants to get to (food)
         self.alpha = alpha  # Influence of pheromones on choice of the next node
         self.beta = beta  # Influence of distance on choice of the next node
+        self.q = q  # Amount of pheromones that the ant leaves on the path
 
         self.path: List[str] = [source]  # Path that the ant walked on
         self.path_length: float = 0  # The length of the path
@@ -50,7 +51,7 @@ class Ant:
         # Get the nodes that the ant hasn't visited yet
         return [node for node in self.nodes.get_neighbours(self.current_node) if node not in self.path]
 
-    def add_pheromones(self, shortest_path_length: float):
+    def add_pheromones(self):
         # Deposit pheromones on the path from source to destination based on the shortest path length
         for i in range(len(self.path) - 1, 0, -1):
-            self.nodes.add_pheromones(self.path[i], self.path[i-1], shortest_path_length/self.path_length)
+            self.nodes.add_pheromones(self.path[i], self.path[i-1], self.q/self.path_length)

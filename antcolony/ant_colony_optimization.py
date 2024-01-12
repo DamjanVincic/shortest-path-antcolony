@@ -1,20 +1,20 @@
-import math
 from typing import Tuple, List
 from .ant import Ant
 from .nodes import Nodes
 
 
 class AntColonyOptimization:
-    def __init__(self, nodes: Nodes, m: int, alpha: float, beta: float, rho: float, iterations: int):
+    def __init__(self, nodes: Nodes, m: int, alpha: float, beta: float, rho: float, iterations: int, q: float):
         self.nodes = nodes
         self.m = m  # Number of ants
         self.alpha = alpha  # Influence of pheromones on choice of the next node
         self.beta = beta  # Influence of distance on choice of the next node
         self.rho = rho  # Pheromone evaporation coefficient
         self.iterations = iterations  # Number of iterations
+        self.q = q  # The amount of pheromones left on the path by the ant
 
     def _send_ants(self, source: str, destination: str) -> Tuple[float, List[str]] | None:
-        ants = [Ant(self.nodes, source, destination, self.alpha, self.beta) for _ in range(self.m)]  # Starting ants
+        ants = [Ant(self.nodes, source, destination, self.alpha, self.beta, self.q) for _ in range(self.m)]  # Starting ants
         arrived_ants = []  # Ants that arrived to the destination
         moved = True  # Flag to check if any ant has moved, if not, we stop the iteration
         while moved:
@@ -36,10 +36,8 @@ class AntColonyOptimization:
         return None
 
     def _leave_pheromones(self, ants: List[Ant]):
-        # The shortest path found that will be used for the amount of pheromones added
-        shortest_path_length = min(ant.path_length for ant in ants) if ants else math.inf
         for ant in ants:
-            ant.add_pheromones(shortest_path_length)
+            ant.add_pheromones()
 
     def find_shortest_path(self, source: str, destination: str) -> Tuple[float, List[str]] | None:
         optimum = None
