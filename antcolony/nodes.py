@@ -26,7 +26,7 @@ class Nodes:
                 if not graph.has_node(node_id):
                     graph.add_node(node_id, data=Node(float(match.group(2)), float(match.group(3))))
                 elif not graph.nodes[node_id].get('data', None):
-                    # if node is in the graph but without its coordinates (if it was added as a neighbour to another one)
+                    # If node is in the graph but without its coordinates (if it was added as a neighbour to another node)
                     graph.nodes[node_id]['data'] = Node(float(match.group(2)), float(match.group(3)))
 
                 adjacent_nodes = match.group(4)
@@ -40,6 +40,7 @@ class Nodes:
                     # If there isn't an edge between the node and the neighbour, and the neighbour has coordinates
                     if not graph.has_edge(node_id, adjacent_node_id) and graph.nodes[adjacent_node_id].get('data', None):
                         graph.add_edge(node_id, adjacent_node_id, distance=graph.nodes[node_id]['data'].distance(graph.nodes[adjacent_node_id]['data']), pheromones=starting_pheromones)
+
         return graph
 
     def get_neighbours(self, node_id):
@@ -52,6 +53,7 @@ class Nodes:
         self[node1, node2]['pheromones'] += pheromones
 
     def evaporate(self, rho):
+        # Evaporate the percentage of pheromones, percentage is represented with rho
         for edge in self._graph.edges:
             self._graph.edges[edge]['pheromones'] *= 1-rho
 

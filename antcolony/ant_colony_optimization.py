@@ -3,19 +3,18 @@ from .ant import Ant
 
 
 class AntColonyOptimization:
-    def __init__(self, nodes, m, alpha, beta, rho, iterations, epsilon) -> None:
+    def __init__(self, nodes, m, alpha, beta, rho, iterations) -> None:
         self.nodes = nodes
-        self.m = m  # number of ants
-        self.alpha = alpha  # influence of pheromones on choice of the next node
-        self.beta = beta  # influence of distance on choice of the next node
-        self.rho = rho  # pheromone evaporation coefficient
-        self.iterations = iterations  # number of iterations
-        self.epsilon = epsilon  # maximum difference of path lengths (to stop iterations if we get very similar results)
+        self.m = m  # Number of ants
+        self.alpha = alpha  # Influence of pheromones on choice of the next node
+        self.beta = beta  # Influence of distance on choice of the next node
+        self.rho = rho  # Pheromone evaporation coefficient
+        self.iterations = iterations  # Number of iterations
 
     def send_ants(self, source, destination):
-        ants = [Ant(self.nodes, source, destination, self.alpha, self.beta) for _ in range(self.m)]
-        arrived_ants = []
-        moved = True
+        ants = [Ant(self.nodes, source, destination, self.alpha, self.beta) for _ in range(self.m)]  # Starting ants
+        arrived_ants = []  # Ants that arrived to the destination
+        moved = True  # Flag to check if any ant has moved, if not, we stop the iteration
         while moved:
             moved = False
             for ant in ants:
@@ -28,12 +27,14 @@ class AntColonyOptimization:
         self.nodes.evaporate(self.rho)
         self.leave_pheromones(arrived_ants)
 
+        # Choose the ant that found the shortest path to the distance
         best_ant = min(arrived_ants, key=lambda x: x.path_length) if arrived_ants else None
         if best_ant:
             return best_ant.path_length, best_ant.path
         return None
 
     def leave_pheromones(self, ants):
+        # The shortest path found that will be used for the amount of pheromones added
         shortest_path_length = min(ant.path_length for ant in ants) if ants else math.inf
         for ant in ants:
             ant.add_pheromones(shortest_path_length)
