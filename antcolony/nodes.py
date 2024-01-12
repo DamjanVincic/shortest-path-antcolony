@@ -4,10 +4,10 @@ from .node import Node
 
 
 class Nodes:
-    def __init__(self, filename):
-        self._graph = self._load_graph(filename)
+    def __init__(self, filename, starting_pheromones):
+        self._graph = self._load_graph(filename, starting_pheromones)
 
-    def _load_graph(self, filename):
+    def _load_graph(self, filename, starting_pheromones):
         graph = nx.Graph()
 
         r"""
@@ -39,7 +39,7 @@ class Nodes:
 
                     # If there isn't an edge between the node and the neighbour, and the neighbour has coordinates
                     if not graph.has_edge(node_id, adjacent_node_id) and graph.nodes[adjacent_node_id].get('data', None):
-                        graph.add_edge(node_id, adjacent_node_id, distance=graph.nodes[node_id]['data'].distance(graph.nodes[adjacent_node_id]['data']), pheromones=1.0)
+                        graph.add_edge(node_id, adjacent_node_id, distance=graph.nodes[node_id]['data'].distance(graph.nodes[adjacent_node_id]['data']), pheromones=starting_pheromones)
         return graph
 
     def get_neighbours(self, node_id):

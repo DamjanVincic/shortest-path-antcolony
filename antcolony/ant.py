@@ -11,25 +11,22 @@ class Ant:
 
         self.path = [source]
         self.path_length = 0
-        self.visited_nodes = [source]
         self.reached_destination = False
-        self.end = False
+        self.can_move = True
 
     def move(self):
         next_node = self._choose_node()
-        if not next_node or self.reached_destination:
-            self.end = True
-            return False
+        if not next_node:
+            self.can_move = False
+            return
 
         self.path.append(next_node)
-        self.visited_nodes.append(next_node)
         self.path_length += self.nodes[self.current_node, next_node]['distance']
         self.current_node = next_node
 
         if self.current_node == self.destination:
             self.reached_destination = True
-
-        return True
+            self.can_move = False
 
     def _choose_node(self):
         unvisited_neighbours = self._get_unvisited_neighbours()
@@ -47,7 +44,7 @@ class Ant:
         return next_node
 
     def _get_unvisited_neighbours(self):
-        return [node for node in self.nodes.get_neighbours(self.current_node) if node not in self.visited_nodes]
+        return [node for node in self.nodes.get_neighbours(self.current_node) if node not in self.path]
 
     def add_pheromones(self, shortest_path_length):
         for i in range(len(self.path) - 1, 0, -1):

@@ -19,11 +19,12 @@ class AntColonyOptimization:
         while moved:
             moved = False
             for ant in ants:
-                if not ant.move():
+                if ant.can_move:
+                    ant.move()
+                    moved = True
                     if ant.reached_destination:
                         arrived_ants.append(ant)
-                else:
-                    moved = True
+
         self.nodes.evaporate(self.rho)
         self.leave_pheromones(arrived_ants)
 
@@ -38,14 +39,15 @@ class AntColonyOptimization:
             ant.add_pheromones(shortest_path_length)
 
     def find_shortest_path(self, source, destination):
-        previous_optimum = None
+        optimum = None
+
         for i in range(self.iterations):
             current_optimum = self.send_ants(source, destination)
-            if current_optimum and previous_optimum and current_optimum[0] < previous_optimum[0]:
-                previous_optimum = current_optimum
-            if previous_optimum and abs(previous_optimum[0] - current_optimum[0]) < self.epsilon:
-                break
-            previous_optimum = current_optimum
+            if not optimum:
+                optimum = current_optimum
+                continue
+            if current_optimum and current_optimum[0] < optimum[0]:
+                optimum = current_optimum
 
-        return previous_optimum
+        return optimum
     
