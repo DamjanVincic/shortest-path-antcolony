@@ -36,8 +36,11 @@ class AntColonyOptimization:
         return None
 
     def _leave_pheromones(self, ants: List[Ant]):
+        if len(ants)==0:
+            return
+        shortest_path=min([ant.path_length for ant in ants])
         for ant in ants:
-            ant.add_pheromones()
+            ant.add_pheromones(shortest_path)
 
     def find_shortest_path(self, source: str, destination: str) -> Tuple[float, List[str]] | None:
         optimum = None

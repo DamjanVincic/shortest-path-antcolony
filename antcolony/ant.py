@@ -51,7 +51,7 @@ class Ant:
         # Get the nodes that the ant hasn't visited yet
         return [node for node in self.nodes.get_neighbours(self.current_node) if node not in self.path]
 
-    def add_pheromones(self):
+    def add_pheromones(self,shortest_path):
         # Deposit pheromones on the path from source to destination based on the shortest path length
         for i in range(len(self.path) - 1, 0, -1):
-            self.nodes.add_pheromones(self.path[i], self.path[i-1], self.q/self.path_length)
+            self.nodes.add_pheromones(self.path[i], self.path[i-1], self.q*(shortest_path/self.path_length))
